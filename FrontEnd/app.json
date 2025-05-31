@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "entryPoint": "./node_modules/expo-router/entry.js",
+    "name": "FrontEnd",
+    "slug": "FrontEnd",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {},
+    "web": {},
+    "scheme": "frontend",
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
