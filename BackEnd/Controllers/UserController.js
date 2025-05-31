@@ -35,8 +35,10 @@ const CreateUser = asyncHandler(async(req ,res) => {
             }
         }, "umar123", {expiresIn: '10d'})
         res.status(201).json({
-      
+            
+            
             accessToken,
+
         });
     }
 }); 
