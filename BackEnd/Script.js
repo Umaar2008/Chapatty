@@ -6,10 +6,13 @@ const connectDB = require('./Config/DBconnection')
 require('dotenv').config();
 
 connectDB();
+app.use(cors({
+    origin: 'exp://192.168.0.107:8081',
+    credentials: true
+  }));
 
-
-const server = app.listen(5000, '192.168.0.106', () => {
-    console.log('Server is running on http://192.168.0.109:5000');
+const server = app.listen(5000, '192.168.0.107', () => {
+    console.log('Server is running on http://192.168.0.107:5000');
 });
 
 app.use(express.json());

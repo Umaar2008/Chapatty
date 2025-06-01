@@ -7,6 +7,8 @@ export default function RootLayout() {
       <Stack.Screen name="Onboardingslides" options={{ title: "Onboardingslides" , headerShown : false }} />
       <Stack.Screen name="Signup" options={{ title: "Sign Up" , headerShown : false  }} />
       <Stack.Screen name="Login" options={{ title: "Log In"  , headerShown : false }} />
+      <Stack.Screen name="(tabs)" options={{ title: "Log In"  , headerShown : false }} />
+
 
     </Stack>
   );

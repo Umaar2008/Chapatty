@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View , TextInput, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
-import { push } from 'expo-router/build/global-state/routing'
 import Button from '../Components/Button'
-
+import useAuthStore from '../Store/AuthStore'
+import { router } from 'expo-router'
+    
 const Signup = () => {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
@@ -11,9 +12,12 @@ const Signup = () => {
     const [passwordInitial, setPasswordInitial] = useState("");
     const [passwordConfirmed, setPasswordConfirmed] = useState("");
 
+    const register = useAuthStore((state) => state.register);
+    const error = useAuthStore((state) => state.error);
+    const isLoading = useAuthStore((state) => state.loading);
     const[err , setErr] = useState("");
 
-    const onPress = () => {
+    const onPress = async () => {
         if (!email || !passwordInitial || !passwordConfirmed || !name) {
           setErr("All fields are required");
           return;
@@ -24,13 +28,20 @@ const Signup = () => {
           return;
         }
       
-        setPassword(passwordInitial);
         setErr('');
+        console.log("Register payload:", { name, email, password: passwordInitial });
+        try {
+            await register({ name, email, password: passwordInitial });
+            console.log("User registered successfully!");
+          } catch (err) {
+            const message = err?.response?.data?.message || err.message || "Registration failed";
+            setErr(message);
+          }
 
-        console.log("Form submitted:", { name, email, password: passwordInitial });
       
-
-    };
+      }
+    
+    
       
 
 
@@ -73,6 +84,7 @@ const Signup = () => {
                 
     <TextInput
     style={styles.Input}
+    value={name}
     onChangeText={(text) => setName(text) }
     placeholder='Name'
 keyboardType="default"
@@ -155,7 +167,7 @@ keyboardType="default"
         {err ? <Text style={styles.errorText}>{err}</Text> : null}
 
       <Button
-      title="Create Account"
+      title={isLoading ? "Creating..." : "Create Account"}
       rounded
       yellow
       onPress={onPress}
