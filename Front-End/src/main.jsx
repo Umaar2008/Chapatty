@@ -4,13 +4,17 @@ import './index.css'
 import "firebaseui/dist/firebaseui.css";
 import App from './App.jsx'
 import { AuthProvider } from './Contexts/AuthContext/index.jsx';
+import { ProfileMaking } from './Contexts/ProfileContext/index.jsx';
+import React from 'react';
 
 createRoot(document.getElementById('root')).render(
-  
-  <StrictMode>
+    <StrictMode>
       <AuthProvider>
+    <ProfileMaking>
+
       <App />
+    </ProfileMaking>
   </AuthProvider>
-    </StrictMode>,
+    </StrictMode>
 
   )

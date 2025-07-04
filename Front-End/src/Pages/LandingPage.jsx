@@ -352,6 +352,7 @@ gradientWidth={50}
 </div>
 </div>
 </div>
+
 </ScrollFloat>
 
  </div>

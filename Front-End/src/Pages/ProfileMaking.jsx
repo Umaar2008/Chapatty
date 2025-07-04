@@ -3,43 +3,83 @@ import Input from '../Components/Input'
 import { useAuth } from '../Contexts/AuthContext'
 import DecryptedText from '../Components/DecryptedText'
 import { FaCamera } from 'react-icons/fa'; 
-import { format } from "date-fns"
+import { format, set } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
  import { Button } from '../Components/bbutton'
  import Buttons from '../Components/Button'
-import { cn } from "@/lib/utils"
 import { Calendar } from "../Components/Calendar"
+import { useNavigate } from 'react-router-dom';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "../Components/Popover"
+import { useProfile } from '../Contexts/ProfileContext';
 
 import DropDown from '../Components/Dropdown';
 
 function ProfileMaking() {
-  const {Name} = useAuth()
+
+  const navigate = useNavigate();
+
+
+  const {Name ,   firebaseUId} = useAuth()
   console.log(Name)
+const {
+     file ,
+        setFile ,
+        date ,
+        setDate, 
+        gender ,
+        setGender,
+        bio ,
+        setBio ,
+        username ,
+        setUserName,
+        hobbies ,
+        setHobbies,
+        CreateUser
+} = useProfile()
   
-  const [file , setFile ] = useState() 
-  const [date, setDate] = useState(null);
-  const [gender, setGender] = useState(null);
-  const [bio , setBio ] = useState("")  
-  const [username , setUserName] = useState("")
-  const [hobbies , setHobbies] = useState("");
+ 
+
+const handleClick = async (e) => {
+  e.preventDefault();
+  try {
+    const success = await CreateUser(
+      firebaseUId,
+      username,
+      file,
+      bio,
+      hobbies,
+      date,
+      gender?.value
+    );
+
+    if (success) {
+      navigate('/Inbox');
+    } else {
+      console.error("Profile creation failed: No success returned");
+    }
+  } catch (error) {
+    console.error("Axios error during profile creation:", error.response?.data || error.message);
+  }
+};
 
 
-  
-  
-  const [preview, setPreview] = useState(null);
+
+
+console.log(firebaseUId)
+const [preview, setPreview] = useState(null);
   
   const handleChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setPreview(URL.createObjectURL(file));
+      setFile(file);
     }
   };
-
+  
   const genderOptions = [
   { label: "Male", value: "male" },
   { label: "Female", value: "female" },
@@ -79,16 +119,18 @@ function ProfileMaking() {
         className="absolute bottom-0 right-0 bg-white bg-opacity-60 rounded-full p-2 cursor-pointer"
         title="Change profile picture"
       >
-        <FaCamera className="text-white text-sm" />
+        <FaCamera className="text-black text-sm" />
       </label>
     </div>
 
     <div className="w-full max-w-4xl mt-4 px-6">
-      <form method="post" enctype="multipart/form-data" className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+      <form  encType="multipart/form-data" className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
         
         <div>
           <p className="mb-2">Username</p>
-          <Input className="w-full" type="text" placeholder="Username" />
+          <Input className="w-full" type="text" placeholder="Username"
+          onChange={(e) => {setUserName(e.target.value)}}
+          />
         </div>
 
         <div>
@@ -99,13 +141,13 @@ function ProfileMaking() {
         <div className="md:col-span-2">
           <p className="mb-2">Bio</p>
           <textarea
-          
+          onChange={(e) => {setBio(e.target.value) }}
             placeholder="Bio"
             rows={4}
             className="h-32 text-sm 
-    aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive
-    focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]
-    placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex  w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-smh-24"
+            aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive
+            focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]
+            placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex  w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-smh-24"
           />
         </div>
 
@@ -123,14 +165,17 @@ function ProfileMaking() {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
-              <Calendar mode="single" selected={date} onSelect={setDate} />
+              <Calendar mode="single" selected={date} onSelect={(selectedDate) => {setDate(selectedDate);
+  }} />
             </PopoverContent>
           </Popover>
         </div>
 
         <div>
           <p className="mb-2">Hobbies</p>
-          <Input className="w-full" type="text" placeholder="Hobbies" />
+          <Input className="w-full" type="text" placeholder="Hobbies" 
+          onChange={(e) => {setHobbies(e.target.value) }}
+          />
         </div>
         <div className=''>
 
@@ -139,8 +184,9 @@ function ProfileMaking() {
           primary 
           hover 
           rounded
-
-           > Create Profile</Buttons>
+          onClick={handleClick}
+          
+          > Create Profile</Buttons>
         </div>
       </form>
     </div>
@@ -156,5 +202,7 @@ function ProfileMaking() {
   )
   
 }
-
-export default ProfileMaking
+  
+  
+  export default ProfileMaking
+  

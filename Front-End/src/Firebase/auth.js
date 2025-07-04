@@ -8,7 +8,7 @@ export const doCreatewithEmailAndPassword = async (email, password) => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
   return {
     user: userCredential.user,
-    isNewUser: true // 
+    isNewUser: true 
   };
 };
 export const doSigninwithEmailAndPassword = async (email , password) => {

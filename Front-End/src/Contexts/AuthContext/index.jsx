@@ -6,12 +6,16 @@ import { onAuthStateChanged } from "firebase/auth";
 const AuthContext = React.createContext()
 
 export function useAuth() {
-    return React.useContext(AuthContext)
+  const context = React.useContext(AuthContext)
+  if (!context) throw new Error("useAuth must be used within an AuthProvider")
+  return context
 }
-
 export function AuthProvider ({children}) {
     const [currentUser , setCurrentuser] = useState(null);
     const [userLoggedIn , serUserloggedIn] = useState(false);
+    const [firebaseUId , setFirebaseUId] = useState('')
+
+
     const [Loading , setLoading] = useState(true);
      const [Name, setName] = useState(() => {
         
@@ -34,6 +38,8 @@ export function AuthProvider ({children}) {
         if(user) {
             setCurrentuser(user)
             serUserloggedIn(true)
+         setFirebaseUId(user.uid); 
+       
         }
         else { 
             setCurrentuser(null)
@@ -46,6 +52,7 @@ export function AuthProvider ({children}) {
         userLoggedIn,
         Name,
         setName,
+        firebaseUId,
         Loading
     }
     return  (
