@@ -20,6 +20,22 @@ const {   firebaseUId } = useAuth();
      const [bio , setBio ] = useState("")  
      const [username , setUserName] = useState("")
      const [hobbies , setHobbies] = useState("");
+     const [err , setErr] = useState({
+      "username" : "Username is required",
+      "usernameinvalid" : "Username is invalid",
+      "Password" : "Password is required"
+      ,
+       "Passwordinvalid" : "Password is Invalid",
+      "Name" : "Name is required"
+      ,
+      "Hobbies" : "Hobbies are required"
+      ,
+      "Gender" : "Gender is required",
+      "Date" : "Date of birth is required",
+      "Email" : "Email is required",
+      "bio" : "Field is required to be filed",
+      "ProfilePic" : "Profile Photo is required"
+     })
 
         const CreateUser = async (firebaseUId, username, file, bio, hobbies, date, gender) => {
   try {
@@ -61,7 +77,9 @@ const {   firebaseUId } = useAuth();
         setUserName,
         hobbies ,
         setHobbies,
-        CreateUser
+        CreateUser ,
+        err,
+        setErr
      }
 
 return  (

@@ -1,7 +1,7 @@
 import {auth} from './firebase-config'
-import { Link , Navigate } from 'react-router-dom'
+import { Link , Navigate, useNavigate } from 'react-router-dom'
 
-import { createUserWithEmailAndPassword , signInWithEmailAndPassword , GoogleAuthProvider, FacebookAuthProvider , GithubAuthProvider } from 'firebase/auth'
+import { createUserWithEmailAndPassword , getAdditionalUserInfo, signInWithEmailAndPassword , GoogleAuthProvider, FacebookAuthProvider , GithubAuthProvider, deleteUser  } from 'firebase/auth'
 import { signInWithPopup } from 'firebase/auth'
 
 export const doCreatewithEmailAndPassword = async (email, password) => {
@@ -16,19 +16,31 @@ export const doSigninwithEmailAndPassword = async (email , password) => {
    
 }
 
-export const doSignInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider)
 
-const isNewUser = result._tokenResponse?.isNewUser || result.additionalUserInfo?.isNewUser;
-   const displayName = result.user.displayName; 
+
+export const deleteAcc = async (user) => {
+  try {
+        await deleteUser(user);
+        console.log("User account deleted successfully.");
+    } catch (error) {
+        console.error("Error deleting user account:", error);
+    }
+}
+export const doSignInWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  const result = await signInWithPopup(auth, provider);
+
+  const user = result.user;
+  const displayName = user.displayName;
+  const additionalInfo = getAdditionalUserInfo(result);
+  const isNewUser = additionalInfo?.isNewUser;
 
   return {
-    user: result.user,
-        displayName,
+    user,
+    displayName,
     isNewUser
   };
-}
+};
 
 export const doSignInWithFacebook = async () => {
     const provider = new FacebookAuthProvider();

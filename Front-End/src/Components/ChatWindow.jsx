@@ -9,16 +9,19 @@ import {
 } from 'firebase/firestore';
 import { db } from '../Firebase/firebase-config';
 import { getSafeBase64 } from '../Components/getSafeBase64';
-
+import { useNavigate } from 'react-router-dom';
+import { ColorRing } from 'react-loader-spinner';
 
 function getChatId(uid1, uid2) {
   return [uid1, uid2].sort().join('_');
 }
 
 function ChatWindow({ currentUser, otherUser }) {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
   const [typing, setTyping] = useState(false);
+  const [loading, setLoading] = useState(true); // 👈 loading state added
   const chatId = getChatId(currentUser.uid, otherUser.FirebaseUId);
   const messagesEndRef = useRef(null);
 
@@ -30,7 +33,9 @@ function ChatWindow({ currentUser, otherUser }) {
     const unsubscribe = onSnapshot(q, snapshot => {
       const msgs = snapshot.docs.map(doc => doc.data());
       setMessages(msgs);
+      setLoading(false); // 👈 turn off loader after messages load
     });
+
     return unsubscribe;
   }, [chatId]);
 
@@ -40,7 +45,10 @@ function ChatWindow({ currentUser, otherUser }) {
     }
   }, [messages]);
 
-  
+  const handleClick = () => {
+    navigate(`/UserProfile/${otherUser.FirebaseUId}`);
+  };
+
   const handleChange = (e) => {
     setText(e.target.value);
     setTyping(true);
@@ -70,20 +78,39 @@ function ChatWindow({ currentUser, otherUser }) {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full bg-white">
+ <ColorRing 
+           height="80"
+  width="80"
+visible={true}
+
+  ariaLabel="color-ring-loading"
+  wrapperStyle={{}}
+  wrapperClass="color-ring-wrapper"
+  colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+          
+          />        <p className="ml-4 text-gray-600">Loading messages...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center gap-3 border-b border-gray-300 p-3 bg-white/80 rounded-t-lg">
-        <div className="w-12 h-12 bg-gray-300 rounded-full overflow-hidden">
-  <img
-    src={getSafeBase64(otherUser.ProfilePic)}
-    alt="avatar"
-    className="w-full h-full object-cover"
-  />
-</div>
-
+        <div
+          className="w-12 h-12 cursor-pointer bg-gray-300 rounded-full overflow-hidden"
+          onClick={handleClick}
+        >
+          <img
+            src={getSafeBase64(otherUser.ProfilePic)}
+            alt="avatar"
+            className="w-full h-full object-cover"
+          />
+        </div>
         <div>
           <p className="text-2xl text-gray-800">{otherUser.UserName || 'Unnamed User'}</p>
-          {typing && <p className="text-xs text-green-500">Typing...</p>}
         </div>
       </div>
 
@@ -109,7 +136,6 @@ function ChatWindow({ currentUser, otherUser }) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
       <div className="flex items-center gap-2 p-3 border-t border-gray-300 bg-white/80">
         <input
           value={text}

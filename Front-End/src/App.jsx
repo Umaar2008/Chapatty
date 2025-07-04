@@ -4,6 +4,7 @@ import Profile from"./Pages/Profile";
 import LoginPage from "./Pages/LoginPage";
 import Signup from "./Pages/Signup";
 import ProfileMaking from "./Pages/ProfileMaking";
+import UserProfile from "./Pages/UserProfile";
 import './App.css'
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
       <Route path="/Inbox" element={<Profile/>} />
       <Route path="/LoginPage" element={<LoginPage />} />
       <Route path="/signup" element={<Signup />} />
-
+      <Route path="/UserProfile/:id"element={<UserProfile />} />
 
       
     </Routes>

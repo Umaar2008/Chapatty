@@ -5,12 +5,14 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 
-const {CreateUser , GetUsers, GetUserbyid} = require("../Controllers/UserController")
+const {CreateUser , GetUsers, GetUserbyid , deleteUserbyId} = require("../Controllers/UserController")
 
 
 router.post('/Create', upload.single('ProfilePic'), CreateUser);
 router.get('/Get',  GetUsers);
 router.get('/GetUserbyid/:id', GetUserbyid);
+router.delete('/deleteUserbyId/:id', deleteUserbyId);
+
 
 
 

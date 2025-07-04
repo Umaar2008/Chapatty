@@ -50,5 +50,10 @@ const GetUserbyid = async (req, res) => {
   }
 };
 
+const deleteUserbyId = asyncHandler (async (req , res) => {
+  const {id} = req.params
+  const user = await User.findOneAndDelete({FirebaseUId : id})
+  res.status(200).json("User Deleted")
+})
 
-module.exports = { CreateUser, GetUsers ,GetUserbyid };
+module.exports = { CreateUser, GetUsers ,GetUserbyid , deleteUserbyId };

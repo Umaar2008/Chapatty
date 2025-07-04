@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useRef} from 'react';
 import Button from '../Components/Button';
 import ShinyText from '../Components/ShinyText';
 import DotGrid from '../Components/DotGrid';
@@ -22,9 +22,15 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const { userLoggedIn, loading } = useAuth();
   const [showUI, setShowUI] = useState(true);
+  const aboutref = useRef(null)
+  const contactusref = useRef(null)
+
+   const scrollToSection = (ref) => {
+    ref.current?.scrollIntoView({ behavior: 'smooth' })
+  }
   
 if (loading) {
-  return null; // or show loading spinner
+  return null; 
 }
 
 if (userLoggedIn) {
@@ -58,11 +64,10 @@ if (userLoggedIn) {
       <div className="relative z-20 px-12 py-6">
 
         <div className="flex justify-between items-center">
-          <div className="text-white text-2xl font-semibold">Chatly</div>
+          <div className="text-white text-2xl font-semibold">Chapatty</div>
           <div className="flex gap-4">
-            <Button className="bg-gradient-to-r from-purple-200 to-red-100" rounded secondary hover>Home</Button>
-            <Button className="bg-gradient-to-r from-purple-200 to-red-100" rounded secondary hover>Contact</Button>
-            <Button className="bg-gradient-to-r from-purple-200 to-red-100" rounded secondary hover>About</Button>
+            <Button onClick={() => {scrollToSection(contactusref)}} className="bg-gradient-to-r from-purple-200 to-red-100" rounded secondary hover>Contact</Button>
+            <Button onClick={() => scrollToSection(aboutref)} className="bg-gradient-to-r from-purple-200 to-red-100" rounded secondary hover>About</Button>
             <Button
                   onClick={() => navigate('/LoginPage')}
               className=""
@@ -87,10 +92,12 @@ if (userLoggedIn) {
             className="text-3xl text-white font-semibold mt-3"
           />
           <p className="mt-6 text-xl font-medium text-white/80 leading-relaxed">
-            Chatly is your new favorite way to stay connected with friends, family, classmates, or teammates — all in real time. Whether you're chatting one-on-one or in a group, we make communication easy, fast, and secure.
+            Chapatty is your new favorite way to stay connected with friends, family, classmates, or teammates — all in real time. Whether you're chatting one-on-one or in a group, we make communication easy, fast, and secure.
           </p>
 
-          <Button className="mt-10 px-10 py-3 text-lg" rounded warning hover>
+          <Button className="mt-10 px-10 py-3 text-lg" rounded warning hover
+           onClick={() => navigate('/Signup')}
+>
             Get Started!
           </Button>
         </div>
@@ -105,12 +112,12 @@ if (userLoggedIn) {
   <div className="text-white ">
     <h1 className="text-4xl text-center max-w-3xl mx-auto font-bold">Powerful Features, Seamless Experience.</h1>
     <p className="mt-4 text-lg text-center max-w-3xl mx-auto text-white/80">
-      From instant messaging to video calls, Chatly brings everything you need for fast, simple, and secure communication all in one place.
+      From instant messaging to video calls, Chapatty brings everything you need for fast, simple, and secure communication all in one place.
     </p>
     <div className='flex mt-30 distance-between justify-between'>
 
     <p className=' text-xl w-2xl text-white/80 leading-relaxed  font-bold'>
-    Chatly isn’t just another messaging app it’s a complete communication platform built for the modern world. Whether you're catching up with old friends, coordinating group projects, or simply checking in with loved ones, Chatly makes every interaction feel effortless and natural. With blazing-fast servers, end-to-end encryption, and a clean, distraction-free interface, we prioritize both performance and privacy. Beyond just messaging, Chatly fosters real connection powered by features that feel intuitive, customizable, and designed with you in mind. Whether you're chatting across the street or across continents, we're here to make sure you always feel close.
+    Chapatty isn’t just another messaging app it’s a complete communication platform built for the modern world. Whether you're catching up with old friends, coordinating group projects, or simply checking in with loved ones, Chapatty makes every interaction feel effortless and natural. With blazing-fast servers, end-to-end encryption, and a clean, distraction-free interface, we prioritize both performance and privacy. Beyond just messaging, Chapatty fosters real connection powered by features that feel intuitive, customizable, and designed with you in mind. Whether you're chatting across the street or across continents, we're here to make sure you always feel close.
     </p>
     <div className=' mr-12'>
 
@@ -191,7 +198,7 @@ if (userLoggedIn) {
       
     </div>
 
- <div className='w-full h-full overflow-hidden bg-black'>
+ <div ref={aboutref} className='w-full h-full overflow-hidden  bg-black'>
 <ScrollFloat
   animationDuration={1}
   ease="back.out(1)"
@@ -216,7 +223,7 @@ if (userLoggedIn) {
 
 
 </div>
-        <div className='mt-10 flex justify-between w-full'>
+        <div  className='mt-10 flex  justify-between w-full'>
 <Marquee
 gradient={true}
 gradientColor='black'
@@ -310,7 +317,7 @@ gradientWidth={50}
         />
 
 </Marquee>
-<div class="w-full mt-12 h-px bg-white/60"></div>
+<div ref={contactusref} class="w-full mt-12 h-px bg-white/60"></div>
 <div className='flex  w-full justify-between'>
 <div className='text-center  flex flex-col justify-end h-128  mt-10'>
     <div className=' h-64 flex w-64  justify-between flex-col mb-10 ml-10'>

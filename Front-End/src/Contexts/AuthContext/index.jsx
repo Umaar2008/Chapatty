@@ -14,6 +14,8 @@ export function AuthProvider ({children}) {
     const [currentUser , setCurrentuser] = useState(null);
     const [userLoggedIn , serUserloggedIn] = useState(false);
     const [firebaseUId , setFirebaseUId] = useState('')
+    const [authChecked, setAuthChecked] = useState(false); // NEW
+
 
 
     const [Loading , setLoading] = useState(true);

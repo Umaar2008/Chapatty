@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   doSignInWithFacebook,
   doSignInWithGithub,
@@ -12,9 +12,7 @@ import Button from '../Components/Button'
 import Input from "../Components/Input"
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -22,78 +20,77 @@ import {
 import SpotlightCard from '../Components/SpotlightCard'
 
 function Signup() {
-  
-  const { userLoggedIn , Name , setName } = useAuth()
+  const { Name, setName } = useAuth()
   const navigate = useNavigate()
-  
+
   const [Email, setEmail] = useState('')
   const [Password, setPassword] = useState('')
   const [isSigningIn, setSigningIn] = useState(false)
-  const [err , serErr] = useState('');
-  
-    const isValidEmail = (Email) => {
-      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return regex.test(Email);
-    };
-  
-    
-    //   const validateEmailWithZeroBounce = async (email) => {
-      //   const response = await fetch(`https://api.zerobounce.net/v2/validate?api_key=2ba1ddbdae3b4b28a2532ef1f7c2b54b&email=${email}`);
-//   const data = await response.json();
-//   return data;
-// };
 
-// ZERO BOUNCE NOT WORKING RIGHT NOW 
+  // Error fields
+  const [nameErr, setNameErr] = useState("")
+  const [emailErr, setEmailErr] = useState("")
+  const [passwordErr, setPasswordErr] = useState("")
+  const [generalErr, setGeneralErr] = useState("")
 
-  const onSubmit = async (e) => {
-  e.preventDefault();
-
-  if (!isSigningIn) {
-    setSigningIn(true);
-
-    try {
-    
-      // const data = await validateEmailWithZeroBounce(Email);
-
-      // if (data.status === "invalid") {
-      //   serErr("Invalid Email");
-      //   setSigningIn(false);
-      //   return;
-      // }
-
-      // serErr(""); 
-
-      const { isNewUser } = await doCreatewithEmailAndPassword(Email, Password);
-
-      navigate(isNewUser ? "/ProfileMaking" : "/Inbox");
-
-        if (!isValidEmail(Email)) {
-    serErr("Please enter a valid email address");
-    return;
+  const isValidEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return regex.test(email)
   }
 
-      
-    } catch (err) {
-      setSigningIn(false);
-      
-      if (err.message === "Firebase: Error (auth/email-already-in-use).") {
-        serErr("User already exists. Please login.");
-      } else if (err.message === "Firebase: Password should be at least 6 characters (auth/weak-password).") {
-        serErr("Password should be at least 6 characters.");
-      } else {
-        console.error(err.message);
-        serErr("Something went wrong. Please try again.");
+  const onSubmit = async (e) => {
+    e.preventDefault()
+
+    // Clear all error messages
+    setNameErr("")
+    setEmailErr("")
+    setPasswordErr("")
+    setGeneralErr("")
+
+    if (!Name.trim()) {
+      setNameErr("Name is required.")
+      return
+    }
+
+    if (!isValidEmail(Email)) {
+      setEmailErr("Please enter a valid email address.")
+      return
+    }
+
+    if (Password.length < 6) {
+      setPasswordErr("Password must be at least 6 characters.")
+      return
+    }
+
+    if (!isSigningIn) {
+      setSigningIn(true)
+      try {
+        const { isNewUser } = await doCreatewithEmailAndPassword(Email, Password)
+        navigate(isNewUser ? "/ProfileMaking" : "/Inbox")
+      } catch (err) {
+        const code = err.code
+
+        if (code === "auth/email-already-in-use") {
+          setEmailErr("User already exists. Please login.")
+        } else if (code === "auth/weak-password") {
+          setPasswordErr("Password should be at least 6 characters.")
+        } else if (code === "auth/network-request-failed") {
+          setGeneralErr("Network error. Please check your connection.")
+        } else {
+          console.error(code)
+          setGeneralErr("Something went wrong. Please try again.")
+        }
+
+        setSigningIn(false)
       }
     }
   }
-};
-
 
   const onGoogleSubmit = async () => {
     if (!isSigningIn) {
       setSigningIn(true)
       try {
-        const { isNewUser , displayName} = await doSignInWithGoogle();
+        const { isNewUser, displayName } = await doSignInWithGoogle()
         setName(displayName)
         navigate(isNewUser ? "/ProfileMaking" : "/Inbox")
       } catch (err) {
@@ -102,12 +99,12 @@ function Signup() {
       }
     }
   }
-  
+
   const onFacebookSubmit = async () => {
     if (!isSigningIn) {
       setSigningIn(true)
       try {
-        const { isNewUser , displayName } = await doSignInWithFacebook();
+        const { isNewUser, displayName } = await doSignInWithFacebook()
         setName(displayName)
         navigate(isNewUser ? "/ProfileMaking" : "/Inbox")
       } catch (err) {
@@ -121,7 +118,7 @@ function Signup() {
     if (!isSigningIn) {
       setSigningIn(true)
       try {
-        const { isNewUser , displayName} = await doSignInWithGithub()
+        const { isNewUser, displayName } = await doSignInWithGithub()
         setName(displayName)
         navigate(isNewUser ? "/ProfileMaking" : "/Inbox")
       } catch (err) {
@@ -130,34 +127,32 @@ function Signup() {
       }
     }
   }
-  
-
-
 
   return (
- <>
+    <>
       <SpotlightCard className='h-screen'>
         <div className='content-center h-full'>
           <div className='flex justify-center'>
             <Card className="w-full bg-transparent text-white text-2xl h-128 content-center flex justify-center max-w-sm">
               <CardHeader>
-                <CardTitle className='w-full  content-center flex justify-center'>SignUp</CardTitle>
-              
+                <CardTitle className='w-full content-center flex justify-center'>SignUp</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={onSubmit}>
                   <div className="flex flex-col gap-6">
-                            <div className="grid gap-2">
-                      <Label htmlFor="email">Name</Label>
+
+                    <div className="grid gap-2">
+                      <Label htmlFor="Name">Name</Label>
                       <Input
                         id="Name"
-                        type="Name"
-                        value={Name}
+                        type="text"
                         onChange={(e) => setName(e.target.value)}
                         placeholder="FirstName_LastName"
                         required
                       />
+                      {nameErr && <p className='text-red-500 text-sm'>{nameErr}</p>}
                     </div>
+
                     <div className="grid gap-2">
                       <Label htmlFor="email">Email</Label>
                       <Input
@@ -168,8 +163,9 @@ function Signup() {
                         placeholder="m@example.com"
                         required
                       />
-                    <p className=' text-red-500 text-sm'> {err} </p>
+                      {emailErr && <p className='text-red-500 text-sm'>{emailErr}</p>}
                     </div>
+
                     <div className="grid gap-2">
                       <Label htmlFor="password">Password</Label>
                       <Input
@@ -179,19 +175,22 @@ function Signup() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                       />
+                      {passwordErr && <p className='text-red-500 text-sm'>{passwordErr}</p>}
                     </div>
-                  </div>
-                  <div className='w-full flex justify-center mt-4'>
-                  <Button type="submit" primary rounded hover>
-                    SignUp
-                  </Button>
 
+                    {generalErr && <p className='text-red-500 text-sm text-center'>{generalErr}</p>}
+                  </div>
+
+                  <div className='w-full flex justify-center mt-4'>
+                    <Button type="submit" primary rounded hover>
+                      SignUp
+                    </Button>
                   </div>
                 </form>
               </CardContent>
               <CardFooter className="flex-col gap-2">
                 <p className='text-white text-sm text-center'>
-                 Already a member? <Link to='/LoginPage' className='underline-offset-4 hover:underline'>Login</Link>
+                  Already a member? <Link to='/LoginPage' className='underline-offset-4 hover:underline'>Login</Link>
                 </p>
 
                 <div className='flex justify-between mt-4 w-48'>
