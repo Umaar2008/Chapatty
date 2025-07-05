@@ -19,5 +19,11 @@
     "nodemailer": "^7.0.3",
     "socket.io": "^4.8.1",
     "uuid": "^11.1.0"
-  }
+  }  ,
+
+"scripts": {
+   "start": "node server",
+  "dev": "nodemon server.js",
+  "test": "echo \"Error: no test specified\" && exit 1"
+}
 }
