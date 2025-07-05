@@ -25,17 +25,7 @@ function Profile() {
   const [showModal, setShowModal] = useState(false);
   
   const navigate = useNavigate();
-  
-  const ai = new GoogleGenAI({"apiKey" : "AIzaSyBsngglTqd9XK2LP_oQTXbZer4GFvdE-2U"});
-  
-  // async function main() {
-  //   const response = await ai.models.generateContent({
-  //     model: "gemini-2.5-flash",
-  //     contents: "How does AI work?",
-  //   });
-  //   console.log(response.text);
-  // }
-  //  main();
+    
   
   
   useEffect(() => {
@@ -45,10 +35,10 @@ function Profile() {
     
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/User/GetUserbyid/${currentUser.uid}`);
+        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_GET_CURRENT_USER}${currentUser.uid}`);
         setMyProfile(res.data);
       } catch (error) {
-        console.error("Error fetching profile:", error);
+    throw new error(error.message);
       }
     };
     if (currentUser?.uid) fetchProfile();
@@ -62,19 +52,18 @@ function Profile() {
   const handleDeleteAcc =  async () => {
     
       try {
-        const res = await axios.delete(`http://localhost:5000/User/deleteUserbyId/${currentUser.uid}`);
-        console.log(res.data);
+        const res = await axios.delete(`${import.meta.env.VITE_REACT_APP_GET_CURRENT_USER_TO_DELETE}${currentUser.uid}`);
         setShowModal(false);
         deleteAcc(currentUser)
         handleLogout();
         
       } catch (error) {
-        console.error("Error deleting profile:", error);
+    throw new error(error.message);
+
       }
     
   
   };
-console.log(currentUser)
   if (!currentUser) return <div>Loading profile...</div>;
 
   return (

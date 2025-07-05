@@ -54,11 +54,11 @@ const {   firebaseUId } = useAuth();
       },
     });
 
-    console.log("User created:", response.data);
+   
     return response.data;
   } catch (error) {
-    console.error("CreateUser error:", error.response?.data || error.message);
-    throw error;
+    
+    throw new error;
   }
 };
 

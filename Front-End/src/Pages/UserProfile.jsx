@@ -15,10 +15,10 @@ function UserProfile() {
         }
     const fetchUserProfile = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/User/GetUserbyid/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_GET_OTHER_USER}${id}`);
         setUserProfile(res.data);
       } catch (error) {
-        console.error("Error fetching profile:", error);
+    throw new error(error.message);
       }
     };
 

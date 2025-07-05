@@ -21,9 +21,8 @@ export const doSigninwithEmailAndPassword = async (email , password) => {
 export const deleteAcc = async (user) => {
   try {
         await deleteUser(user);
-        console.log("User account deleted successfully.");
     } catch (error) {
-        console.error("Error deleting user account:", error);
+    throw new error(error.message);
     }
 }
 export const doSignInWithGoogle = async () => {

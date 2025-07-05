@@ -2,13 +2,13 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const { Server } = require('socket.io'); 
-const { createServer } = require('http'); // FIXED
+const { createServer } = require('http'); 
 const connectDB = require('./Config/DBconnection');
 require('dotenv').config();
 
 connectDB();
 
-const server = createServer(app); // FIXED
+const server = createServer(app); 
 
 app.use(cors({
   origin: 'http://localhost:5173',
@@ -24,8 +24,6 @@ app.get('/test', (req, res) => {
 
 app.use("/User", require('./Routes/UserRoutes'));
 
-server.listen(5000, () => {
-  console.log(`Server is running on http://localhost:5000`);
-});
+server.listen(5000, () => {});
 
 

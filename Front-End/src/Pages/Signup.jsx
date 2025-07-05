@@ -77,7 +77,6 @@ function Signup() {
         } else if (code === "auth/network-request-failed") {
           setGeneralErr("Network error. Please check your connection.")
         } else {
-          console.error(code)
           setGeneralErr("Something went wrong. Please try again.")
         }
 
@@ -94,8 +93,10 @@ function Signup() {
         setName(displayName)
         navigate(isNewUser ? "/ProfileMaking" : "/Inbox")
       } catch (err) {
-        console.error(err.message)
         setSigningIn(false)
+    throw new err(err.message);
+
+
       }
     }
   }
@@ -108,8 +109,9 @@ function Signup() {
         setName(displayName)
         navigate(isNewUser ? "/ProfileMaking" : "/Inbox")
       } catch (err) {
-        console.error(err.message)
         setSigningIn(false)
+    throw new err(err.message);
+
       }
     }
   }
@@ -122,8 +124,9 @@ function Signup() {
         setName(displayName)
         navigate(isNewUser ? "/ProfileMaking" : "/Inbox")
       } catch (err) {
-        console.error(err.message)
         setSigningIn(false)
+            throw new err(err.message);
+
       }
     }
   }

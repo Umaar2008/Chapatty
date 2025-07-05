@@ -17,12 +17,12 @@ function UserList({ onSelectUser }) {
 
       setloading(true);
       try {
-        const res = await axios.get("http://localhost:5000/User/Get");
+        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_Get_Users}`);
         const filtered = res.data.filter(user => user.FirebaseUId !== firebaseUId);
         setUsers(filtered);
         setloading(false);
       } catch (error) {
-        console.error("Error fetching users:", error);
+    throw new error(error.message);
       }
     };
 

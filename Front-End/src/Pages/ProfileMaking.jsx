@@ -38,12 +38,12 @@ function ProfileMaking() {
   } = useProfile()
 
   const [preview, setPreview] = useState(null)
-  const [errors, setErrors] = useState({}) // ✅ Error object per field
+  const [errors, setErrors] = useState({}) 
 
   const handleClick = async (e) => {
     e.preventDefault()
 
-    // ✅ Front-end validation
+    
     const newErrors = {}
     if (!username) newErrors.username = "Username is required"
     if (!gender) newErrors.gender = "Gender is required"
@@ -129,7 +129,6 @@ function ProfileMaking() {
 
         <div className="w-full max-w-4xl mt-4 px-6">
           <form className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-            {/* Username */}
             <div>
               <p className="mb-2">Username</p>
               <Input
@@ -141,14 +140,12 @@ function ProfileMaking() {
               {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
             </div>
 
-            {/* Gender */}
             <div>
               <p className="mb-2">Gender</p>
               <DropDown options={genderOptions} value={gender} onChange={setGender} />
               {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
             </div>
 
-            {/* Bio */}
             <div className="md:col-span-2">
               <p className="mb-2">Bio</p>
               <textarea
@@ -163,7 +160,6 @@ function ProfileMaking() {
               {errors.bio && <p className="text-red-500 text-sm">{errors.bio}</p>}
             </div>
 
-            {/* Date of Birth */}
             <div>
               <p className="mb-2">Date of Birth</p>
               <Popover>
@@ -184,7 +180,6 @@ function ProfileMaking() {
               {errors.date && <p className="text-red-500 text-sm">{errors.date}</p>}
             </div>
 
-            {/* Hobbies */}
             <div>
               <p className="mb-2">Hobbies</p>
               <Input
@@ -196,7 +191,6 @@ function ProfileMaking() {
               {errors.hobbies && <p className="text-red-500 text-sm">{errors.hobbies}</p>}
             </div>
 
-            {/* Submit */}
             <div className="md:col-span-2 flex flex-col items-center">
               {errors.submit && <p className="text-red-500 text-sm mb-2">{errors.submit}</p>}
               <Buttons

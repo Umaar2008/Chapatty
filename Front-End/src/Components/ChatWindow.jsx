@@ -6,12 +6,17 @@ import {
   orderBy,
   onSnapshot,
   serverTimestamp,
+  doc,
+  setDoc
 } from 'firebase/firestore';
 import { db } from '../Firebase/firebase-config';
 import { getSafeBase64 } from '../Components/getSafeBase64';
 import { useNavigate } from 'react-router-dom';
 import { ColorRing } from 'react-loader-spinner';
 import { GoogleGenAI } from "@google/genai";
+
+
+
 
 function getChatId(uid1, uid2) {
   if (uid2 === "gemini_ai_bot") return `ai_bot_${uid1}`;
@@ -22,16 +27,15 @@ function ChatWindow({ currentUser, otherUser }) {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
-  const [typing, setTyping] = useState(false);
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
-
+const [typing , setTyping] = useState('')
   const chatId = getChatId(currentUser.uid, otherUser.FirebaseUId);
   const isAIChat = otherUser.FirebaseUId === "gemini_ai_bot";
 
   const ai = isAIChat
     ? new GoogleGenAI({
-        apiKey: "AIzaSyBsngglTqd9XK2LP_oQTXbZer4GFvdE-2U",
+        apiKey: import.meta.env.VITE_REACT_APP_GEMINI_KEY,
       })
     : null;
 
@@ -102,8 +106,8 @@ const reply = result.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I cou
       setText('');
       setTyping(false);
     } catch (error) {
-      console.error("Send error:", error);
       alert("Failed to send message. Try again.");
+    throw new error(error.message);
     }
   };
 

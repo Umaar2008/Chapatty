@@ -28,7 +28,6 @@ function LoginPage() {
   const [Password, setPassword] = useState('')
   const [isSigningIn, setSigningIn] = useState(false)
 
-  // Error states
   const [emailErr, setEmailErr] = useState("")
   const [passwordErr, setPasswordErr] = useState("")
   const [generalErr, setGeneralErr] = useState("")
@@ -36,7 +35,6 @@ function LoginPage() {
   const onSubmit = async (e) => {
     e.preventDefault()
 
-    // Reset all errors first
     setEmailErr("")
     setPasswordErr("")
     setGeneralErr("")
@@ -90,8 +88,9 @@ function LoginPage() {
         setName(displayName)
         navigate(isNewUser ? "/ProfileMaking" : "/Inbox")
       } catch (err) {
-        console.error(err)
+
         setSigningIn(false)
+    throw new err(err.message);
       }
     }
   }
@@ -104,8 +103,8 @@ function LoginPage() {
         setName(displayName)
         navigate(isNewUser ? "/ProfileMaking" : "/Inbox")
       } catch (err) {
-        console.error(err)
-        setSigningIn(false)
+     setSigningIn(false)
+    throw new err(err.message);
       }
     }
   }
@@ -118,8 +117,9 @@ function LoginPage() {
         setName(displayName)
         navigate(isNewUser ? "/ProfileMaking" : "/Inbox")
       } catch (err) {
-        console.error(err)
         setSigningIn(false)
+            throw new err(err.message);
+
       }
     }
   }

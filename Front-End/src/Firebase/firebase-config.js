@@ -4,12 +4,12 @@ import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore"; 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB74qSEaePNaOvmHObS3MQK2GtAbxgXAYc",
+  apiKey: `${import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY}`,
   authDomain: "chapatty-2008.firebaseapp.com",
   projectId: "chapatty-2008",
   storageBucket: "chapatty-2008.firebasestorage.app",
   messagingSenderId: "437474229414",
-  appId: "1:437474229414:web:74cf36bb7fe060e1804867",
+  appId: `${import.meta.env.VITE_REACT_APP_FIREBASE_API_ID}`,
   measurementId: "G-S18W0HCJVL"
 };
 
@@ -18,5 +18,4 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
  const db = getFirestore(app);
-
 export { auth, app , db };
