@@ -2,11 +2,17 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ColorRing } from 'react-loader-spinner';
+import { useAuth } from '../Contexts/AuthContext';
 function UserProfile() {
+  const {userLoggedIn} = useAuth();
   const [userProfile, setUserProfile] = useState(null);
   const { id } = useParams();
  const navigate = useNavigate()
   useEffect(() => {
+    
+        if (!userLoggedIn) {
+          navigate('/')
+        }
     const fetchUserProfile = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/User/GetUserbyid/${id}`);

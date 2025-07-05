@@ -13,6 +13,8 @@ function UserList({ onSelectUser }) {
 
   useEffect(() => {
     const fetchUsers = async () => {
+
+
       setloading(true);
       try {
         const res = await axios.get("http://localhost:5000/User/Get");
@@ -46,6 +48,25 @@ colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
       ) : (
         <>
           <h4 className="text-sm font-semibold text-gray-700 mb-2 text-center">Inbox</h4>
+        <div>
+          <div
+  onClick={() => {
+    onSelectUser({
+      FirebaseUId: "gemini_ai_bot", 
+      UserName: "Gemini AI",
+
+      isAI: true                    
+      
+    });
+    setSelectedUid("gemini_ai_bot");
+  }}
+ 
+>
+
+  
+</div>
+
+        </div>
           <div className="space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]">
             {users.map((user, index) => ( 
               <div
@@ -67,7 +88,7 @@ colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
                 </div>
                 <p className="text-gray-800">{user.UserName || 'Unnamed User'}</p>
               </div>
-            ))}
+            )).reverse()}
           </div>
         </>
       )}

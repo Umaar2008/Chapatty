@@ -11,9 +11,11 @@ import { db } from '../Firebase/firebase-config';
 import { getSafeBase64 } from '../Components/getSafeBase64';
 import { useNavigate } from 'react-router-dom';
 import { ColorRing } from 'react-loader-spinner';
+import { GoogleGenAI } from "@google/genai";
 
 function getChatId(uid1, uid2) {
-  return [uid1, uid2].sort().join('_');
+  if (uid2 === "gemini_ai_bot") return `ai_bot_${uid1}`;
+  return [uid1, uid2].sort().join("_");
 }
 
 function ChatWindow({ currentUser, otherUser }) {
@@ -21,9 +23,17 @@ function ChatWindow({ currentUser, otherUser }) {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
   const [typing, setTyping] = useState(false);
-  const [loading, setLoading] = useState(true); // 👈 loading state added
-  const chatId = getChatId(currentUser.uid, otherUser.FirebaseUId);
+  const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
+
+  const chatId = getChatId(currentUser.uid, otherUser.FirebaseUId);
+  const isAIChat = otherUser.FirebaseUId === "gemini_ai_bot";
+
+  const ai = isAIChat
+    ? new GoogleGenAI({
+        apiKey: "AIzaSyBsngglTqd9XK2LP_oQTXbZer4GFvdE-2U",
+      })
+    : null;
 
   useEffect(() => {
     const q = query(
@@ -33,7 +43,7 @@ function ChatWindow({ currentUser, otherUser }) {
     const unsubscribe = onSnapshot(q, snapshot => {
       const msgs = snapshot.docs.map(doc => doc.data());
       setMessages(msgs);
-      setLoading(false); // 👈 turn off loader after messages load
+      setLoading(false);
     });
 
     return unsubscribe;
@@ -57,17 +67,43 @@ function ChatWindow({ currentUser, otherUser }) {
 
   const sendMessage = async () => {
     if (!text.trim()) return;
+
     try {
-      await addDoc(collection(db, 'chats', chatId, 'messages'), {
-        from: currentUser.uid,
-        to: otherUser.FirebaseUId,
-        text,
-        createdAt: serverTimestamp(),
-      });
+      if (isAIChat && ai) {
+        const result = await ai.models.generateContent({
+          model: "gemini-2.5-flash",
+          contents: [{ role: "user", parts: [{ text }] }],
+        });
+
+const reply = result.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
+
+        await addDoc(collection(db, 'chats', chatId, 'messages'), {
+          from: currentUser.uid,
+          to: "gemini_ai_bot",
+          text,
+          createdAt: serverTimestamp(),
+        });
+
+        await addDoc(collection(db, 'chats', chatId, 'messages'), {
+          from: "gemini_ai_bot",
+          to: currentUser.uid,
+          text: reply,
+          createdAt: serverTimestamp(),
+        });
+      } else {
+        await addDoc(collection(db, 'chats', chatId, 'messages'), {
+          from: currentUser.uid,
+          to: otherUser.FirebaseUId,
+          text,
+          createdAt: serverTimestamp(),
+        });
+      }
+
       setText('');
       setTyping(false);
     } catch (error) {
       console.error("Send error:", error);
+      alert("Failed to send message. Try again.");
     }
   };
 
@@ -81,17 +117,15 @@ function ChatWindow({ currentUser, otherUser }) {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full bg-white">
- <ColorRing 
-           height="80"
-  width="80"
-visible={true}
-
-  ariaLabel="color-ring-loading"
-  wrapperStyle={{}}
-  wrapperClass="color-ring-wrapper"
-  colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
-          
-          />        <p className="ml-4 text-gray-600">Loading messages...</p>
+        <ColorRing
+          height="80"
+          width="80"
+          visible={true}
+          ariaLabel="color-ring-loading"
+          wrapperClass="color-ring-wrapper"
+          colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+        />
+        <p className="ml-4 text-gray-600">Loading messages...</p>
       </div>
     );
   }
@@ -118,9 +152,7 @@ visible={true}
         {messages.map((msg, idx) => (
           <div
             key={idx}
-            className={`flex ${
-              msg.from === currentUser.uid ? 'justify-end' : 'justify-start'
-            }`}
+            className={`flex ${msg.from === currentUser.uid ? 'justify-end' : 'justify-start'}`}
           >
             <div
               className={`rounded-lg px-4 py-2 max-w-xs text-sm ${
@@ -136,6 +168,7 @@ visible={true}
         <div ref={messagesEndRef} />
       </div>
 
+   
       <div className="flex items-center gap-2 p-3 border-t border-gray-300 bg-white/80">
         <input
           value={text}

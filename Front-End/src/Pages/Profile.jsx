@@ -16,16 +16,33 @@ import {
   DropdownMenuSubContent,
   DropdownMenuTrigger,
 } from "../components/Drop-menu";
+import { GoogleGenAI } from "@google/genai";
 
 function Profile() {
   const { userLoggedIn, currentUser } = useAuth();
   const [myProfile, setMyProfile] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
- 
+  
   const navigate = useNavigate();
-
+  
+  const ai = new GoogleGenAI({"apiKey" : "AIzaSyBsngglTqd9XK2LP_oQTXbZer4GFvdE-2U"});
+  
+  // async function main() {
+  //   const response = await ai.models.generateContent({
+  //     model: "gemini-2.5-flash",
+  //     contents: "How does AI work?",
+  //   });
+  //   console.log(response.text);
+  // }
+  //  main();
+  
+  
   useEffect(() => {
+    if(!userLoggedIn) {
+      navigate('/')
+    }
+    
     const fetchProfile = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/User/GetUserbyid/${currentUser.uid}`);

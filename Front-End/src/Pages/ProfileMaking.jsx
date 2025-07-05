@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Input from '../Components/Input'
 import { useAuth } from '../Contexts/AuthContext'
@@ -20,8 +20,13 @@ import {
 
 function ProfileMaking() {
   const navigate = useNavigate()
-  const { Name, firebaseUId } = useAuth()
+  const { Name, firebaseUId, userLoggedIn } = useAuth()
 
+  useEffect(() => {
+    if (!userLoggedIn) {
+      navigate('/')
+    }
+  })
   const {
     file, setFile,
     date, setDate,
@@ -50,8 +55,9 @@ function ProfileMaking() {
     setErrors(newErrors)
 
     if (Object.keys(newErrors).length > 0) return // Stop if any error
-
+    
     try {
+      
       const success = await CreateUser(
         firebaseUId,
         username,
@@ -88,6 +94,7 @@ function ProfileMaking() {
   ]
 
   return (
+ 
     <div className="min-h-screen bg-black text-white">
       <div className="flex flex-col items-center pt-8">
         <DecryptedText
