@@ -22,8 +22,7 @@
   },
   "scripts": {
     "start": "node Script.js",
-    "dev": "nodemon Script.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon Script.js"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
