@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
 app.use("/User", require('./Routes/UserRoutes'));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`✅ Server is running on port ${PORT}`);
 });
