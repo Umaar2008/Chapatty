@@ -16,7 +16,7 @@ require('dotenv').config();
 
     app.use("/User", require('./Routes/UserRoutes'));
 
-    const PORT = process.env.PORT || 5000;
+    const PORT = process.env.PORT ;
     app.listen(PORT, () => {
       console.log(`✅ Server is running on port ${PORT}`);
     });
@@ -24,3 +24,4 @@ require('dotenv').config();
     console.error('❌ Server crashed due to DB error or config issue:', err);
   }
 })();
+
