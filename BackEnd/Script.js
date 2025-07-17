@@ -18,10 +18,10 @@ require('dotenv').config();
 
     const PORT = process.env.PORT ;
     app.listen(PORT, () => {
-      console.log(`✅ Server is running on port ${PORT}`);
+      console.log(`Server is running on port ${PORT}`);
     });
   } catch (err) {
-    console.error('❌ Server crashed due to DB error or config issue:', err);
+    console.error('Server crashed due to DB error or config issue:', err);
   }
 })();
 

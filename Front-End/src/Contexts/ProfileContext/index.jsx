@@ -53,7 +53,7 @@ const {   firebaseUId } = useAuth();
         "Content-Type": "multipart/form-data",
       },
     });
-//umar//
+
    
     return response.data;
   } catch (error) {
