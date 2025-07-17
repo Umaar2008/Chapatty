@@ -24,4 +24,4 @@ require('dotenv').config();
     console.error('❌ Server crashed due to DB error or config issue:', err);
   }
 })();
-;
+

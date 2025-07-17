@@ -48,12 +48,12 @@ const {   firebaseUId } = useAuth();
     formData.append("DOB", date);
     formData.append("Gender", gender);
 
-    const response = await axios.post("http://localhost:5000/User/Create", formData, {
+    const response = await axios.post("https://chapatty-1.onrender.com/User/Create", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
-
+//umar//
    
     return response.data;
   } catch (error) {
